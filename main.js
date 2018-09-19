@@ -7,20 +7,34 @@ for(let i=0;i<allButtons.length;i++){
         $('#images').css({
             transform:'translateX('+p+'px)'
         })
-        n=index             //在点击的相应位置继续轮播
-        allButtons.eq(n).addClass('red').siblings('.red').removeClass('red')
+        n=index             //让n=index，在点击的相应位置继续轮播
+        activeButton(allButtons.eq(n))
     })
 }
 
 //自动轮播，并且按钮高亮
 var n=0
 var size=allButtons.length
-allButtons.eq(n%size).trigger('click').addClass('red').siblings('.red').removeClass('red')
+playSlide(n%size)
 
-var timerId=setInterval(()=>{
-    n+=1
-    allButtons.eq(n%size).trigger('click').addClass('red').siblings('.red').removeClass('red')
-},2000)
+var timerId=setTimer()
+
+//封装成几个函数，优化一下代码
+function setTimer(){                   
+    return setInterval(()=>{            //延时执行函数，2秒后触发点击事件切换图片
+        n+=1
+        playSlide(n%size)
+    },2000)
+}
+
+function playSlide(index){
+    allButtons.eq(index).trigger('click')   //触发点击事件，切换图片，添加类，高亮按钮
+            
+}
+
+function activeButton($button){
+    $button.addClass('red').siblings('.red').removeClass('red')     //添加类，高亮按钮
+}
 
 //鼠标移入，停止轮播
 $('.window').on('mouseenter',function(){
@@ -29,8 +43,6 @@ $('.window').on('mouseenter',function(){
 
 //鼠标移出，恢复轮播
 $('.window').on('mouseleave',function(){
-    timerId=setInterval(()=>{
-        n+=1
-        allButtons.eq(n%size).trigger('click').addClass('red').siblings('.red').removeClass('red')
-    },2000)
+    timerId=setTimer()
+        
 })
